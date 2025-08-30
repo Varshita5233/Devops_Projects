@@ -8,7 +8,7 @@ eval "$(ssh-agent -s)"
 
 2. Add Your Private Key to the Agent
 ```bash
-ssh-add ~/.ssh/id_rsa
+ssh-add ~/.ssh/<your-pem>
 ```
 
 3. To check if the key is added:
