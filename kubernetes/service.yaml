@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: youtube-clone-app-service
+  labels:
+    app: youtube-clone-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: youtube-clone-app
+  ports:
+    - port: 80
+      targetPort: 3000
+    

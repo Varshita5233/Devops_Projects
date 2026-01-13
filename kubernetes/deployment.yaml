@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: youtube-clone-app
+  labels:
+    app: youtube-clone-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: youtube-clone-app
+  template:
+    metadata:
+      labels:
+        app: youtube-clone-app
+    spec:
+      containers:
+        - name: youtube-clone-app
+          image: jyotsna2181/youtube-clone
+          ports:
+            - containerPort: 3000
