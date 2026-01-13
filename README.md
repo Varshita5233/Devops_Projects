@@ -73,20 +73,25 @@ Trivy is used for:
 Example:
 ```bash
 trivy fs .
+trivy image <image-name>
+```
 
 **## Docker Build & Push**
+```bash
 docker build -t youtube-clone .
 docker tag youtube-clone <dockerhub-username>/youtube-clone:latest
 docker push <dockerhub-username>/youtube-clone:latest
+```
 
 **## Kubernetes Deployment (AWS EKS)**
 After successful build & scan, deployment is done to AWS EKS using kubectl.
+```bash
 kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
+```
 
 **✨ Author
 Varshita Rajana**
 **DevOps | AWS | Kubernetes | CI/CD | Jenkins | Terraform**
 
-trivy image <image-name>
 
