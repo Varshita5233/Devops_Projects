@@ -90,6 +90,9 @@ kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 ```
 
+<img width="1920" height="1080" alt="final ss-2" src="https://github.com/user-attachments/assets/39b86013-ae70-48fb-a4b4-cba21b33a6ca" />
+
+
 **✨ Author
 Varshita Rajana**
 **DevOps | AWS | Kubernetes | CI/CD | Jenkins | Terraform**
