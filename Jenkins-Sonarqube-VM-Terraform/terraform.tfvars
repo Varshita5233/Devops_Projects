@@ -1,0 +1,9 @@
+sg_name = "Jenkins-VM-sg"
+ami_id = "ami-02b8269d5e85954ef"
+volume_size = 40
+instance_name = "Jenkins-VM-ec2"
+instance_type = "t2.large"
+ingress_rules = [ 22, 80, 443, 8080, 9000, 3000 ]
+protocol = "tcp"
+cidr_blocks = ["0.0.0.0/0"]
+key_name="yt_clone_keypair"

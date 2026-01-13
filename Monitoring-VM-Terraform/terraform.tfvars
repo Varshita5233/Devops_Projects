@@ -1,0 +1,9 @@
+sg_name = "Monitoring-VM-sg"
+ami_id = "ami-02b8269d5e85954ef"
+volume_size = 20
+instance_name = "Monitoring-VM-ec2"
+instance_type = "t2.medium"
+ingress_rules = [ 22, 80, 443, 9090, 9100, 3000 ]
+protocol = "tcp"
+cidr_blocks = ["0.0.0.0/0"]
+key_name="yt_clone_keypair"
