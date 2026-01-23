@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic-blue 
+  namespace: petclinic
+  labels:
+    app: petclinic
+    version: blue 
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: petclinic
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: petclinic
+        version: blue
+    spec:
+      containers:
+        - name: petclinic
+          image: jyotsna2181/petclinic:blue
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "300m" 
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+    
