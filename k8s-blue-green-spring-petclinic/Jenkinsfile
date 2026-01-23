@@ -1,5 +1,8 @@
 pipeline{ 
     agent any
+    environment{
+        DOCKER_IMAGE = "jyotsna2181/petclinic"
+    }
     stages{
         stage("clean workspace"){
             steps{
@@ -8,12 +11,23 @@ pipeline{
         }
         stage("Code Checkout"){
             steps{
-                git branch: 'main', url: 'https://github.com/Varshita5233/spring-petclinic'
+                git branch: 'main', url: 'https://github.com/Varshita5233/Devops_Projects'
             }
         }
         stage('Maven build'){
             steps{
+                dir('k8s-blue-green-spring-petclinic'){
                 sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        stage('Docker Build'){
+            steps{
+                dir('k8s-blue-green-spring-petclinic'){
+                sh '''
+                docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .
+                '''
+                }
             }
         }
     }
