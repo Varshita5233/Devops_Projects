@@ -1,0 +1,20 @@
+pipeline{ 
+    agent any
+    stages{
+        stage("clean workspace"){
+            steps{
+                cleanWs()
+            }
+        }
+        stage("Code Checkout"){
+            steps{
+                git branch: 'main', url: 'https://github.com/Varshita5233/spring-petclinic'
+            }
+        }
+        stage('Maven build'){
+            steps{
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+    }
+}
