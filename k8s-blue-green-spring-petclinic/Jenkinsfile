@@ -66,9 +66,10 @@ pipeline{
                 }
                 sh """
                 echo "Deploying to ${IDLE_COLOR}"
-                kubectl apply -f k8s/deployment-${IDLE_COLOR}.yaml
+                kubectl apply -n ${NAMESPACE} -f k8s/deployment-${IDLE_COLOR}.yaml
                 kubectl set image deployment/petclinic-${IDLE_COLOR} 
                 petclinic=${DOCKER_IMAGE}:${BUILD_NUMBER} -n ${NAMESPACE}
+                kubectl rollout status deployment/petclinic-${IDLE_COLOR} -n ${NAMESPACE}
                 """
                 }
             }
