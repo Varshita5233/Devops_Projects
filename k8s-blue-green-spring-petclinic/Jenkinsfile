@@ -2,6 +2,14 @@ pipeline{
     agent any
     environment{
         DOCKER_IMAGE = "jyotsna2181/petclinic"
+        NAMESPACE = "petclinic"
+    }
+    parameters{
+        choice(
+            name: 'LIVE_COLOR',
+            choices: ["blue","green"],
+            description: "Which env is LIVE currently?"
+        )
     }
     stages{
         stage("clean workspace"){
@@ -29,6 +37,59 @@ pipeline{
                 '''
                 }
             }
+        }
+        // stage('scan docker image using Trivy'){
+        //     steps{
+        //         sh """
+        //         export TRIVY_CACHE_DIR=/tmp/trivy-cache
+        //         rm -rf /tmp/trivy-cache
+        //         trivy image ${DOCKER_IMAGE}:${BUILD_NUMBER} > trivyimage.txt
+        //         """
+        //     }
+        // }
+        stage('push docker image'){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    sh """
+                    echo $PASS | docker login -u $USER --password-stdin
+                    docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}
+                    """
+                }
+            }
+        }
+        stage('Deploy to IDLE environment'){
+            steps{
+                dir('k8s-blue-green-spring-petclinic'){
+                script{
+                    def idle = (params.LIVE_COLOR == "blue")?"green":"blue"
+                    env.IDLE_COLOR = idle
+                }
+                sh """
+                echo "Deploying to ${IDLE_COLOR}"
+                kubectl apply -f k8s/deployment-${IDLE_COLOR}.yaml
+                kubectl set image deployment/petclinic-${IDLE_COLOR} 
+                petclinic=${DOCKER_IMAGE}:${BUILD_NUMBER} -n ${NAMESPACE}
+                """
+                }
+            }
+        }
+        stage('switch traffic'){
+            steps{
+                sh """
+                echo "" switching service traffic to ${IDLE_COLOR}
+                kubectl patch svc petclinic-svc -n ${NAMESPACE} -p '{"spec:"{"selector":{"app":"petclinic","version":"green"}}}'
+                """
+            }
+        }
+    }
+     
+    post{
+        always{
+            sh """
+            docker system prune -af --volumes || true
+            rm -rf /var/lib/jenkins/.cache/trivy || true
+            rm -rf /tmp/* || true
+            """
         }
     }
 }
