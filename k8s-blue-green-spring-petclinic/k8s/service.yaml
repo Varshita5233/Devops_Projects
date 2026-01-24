@@ -4,7 +4,7 @@ metadata:
   name: petclinic-svc 
   namespace: petclinic
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - port: 80
       targetPort: 8080
