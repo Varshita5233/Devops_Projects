@@ -19,7 +19,9 @@ pipeline{
         }
         stage("Code Checkout"){
             steps{
+                dir('k8s-blue-green-spring-petclinic'){
                 git branch: 'main', url: 'https://github.com/Varshita5233/Devops_Projects'
+                }
             }
         }
         stage('Maven build'){
