@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: petclinic
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root 
+            - name: MYSQL_DATABASE
+              value: petclinic
+
+          ports:
+            - containerPort: 3306
+
+---
+
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: mysql-svc
+  namespace: petclinic
+spec:
+  selector:
+    app: mysql
+  ports:
+    - port: 80
+      targetPort: 3306
