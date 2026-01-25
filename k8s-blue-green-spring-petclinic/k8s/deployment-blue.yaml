@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: petclinic
-          image: jyotsna2181/petclinic:33
+          image: REPLACE_IMAGE
           ports:
             - containerPort: 8080
           resources:
