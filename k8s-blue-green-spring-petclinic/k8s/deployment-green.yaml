@@ -32,7 +32,7 @@ spec:
               memory: "512Mi" 
           livenessProbe:
             httpGet:
-              path: /actuator/health
+              path: /login
               port: 8080
             initialDelaySeconds: 60
             periodSeconds: 15
@@ -40,7 +40,7 @@ spec:
             failureThreshold: 5
           readinessProbe:
             httpGet:
-              path: /actuator/health
+              path: /login
               port: 8080
             initialDelaySeconds: 45
             periodSeconds: 10
