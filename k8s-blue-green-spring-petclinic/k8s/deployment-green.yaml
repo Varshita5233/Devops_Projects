@@ -23,6 +23,12 @@ spec:
           image: jyotsna2181/petclinic:latest
           ports:
             - containerPort: 8080
+          env:
+            - name: database
+              valueFrom:
+                configMapKeyRef:
+                  key: database
+                  name: petclinic-config
           resources:
             requests:
               cpu: "100m" 

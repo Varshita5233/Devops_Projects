@@ -1,0 +1,7 @@
+apiVersion: v1 
+kind: ConfigMap
+metadata:
+  name: petclinic-config
+  namespace: petclinic
+data:
+  database: h2
