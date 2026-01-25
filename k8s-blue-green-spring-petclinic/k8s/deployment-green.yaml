@@ -24,11 +24,8 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: database
-              valueFrom:
-                configMapKeyRef:
-                  key: database
-                  name: petclinic-config
+            - name: SPRING_PROFILES_ACTIVE
+              value: mysql
           resources:
             requests:
               cpu: "100m" 
