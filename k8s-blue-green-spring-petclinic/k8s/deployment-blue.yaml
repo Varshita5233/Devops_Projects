@@ -24,12 +24,21 @@ spec:
           ports:
             - containerPort: 8080
           env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: mysql
             - name: SPRING_DATASOURCE_URL
               value: jdbc:mysql://mysql:3306/petclinic
             - name: SPRING_DATASOURCE_USERNAME
               value: root
             - name: SPRING_DATASOURCE_PASSWORD
               value: root
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: SPRING_SQL_INIT_MODE
+              value: always
+            - name: MYSQL_HOST
+              value: mysql
+            - name: MYSQL_PORT
           resources:
             requests:
               cpu: "100m"
@@ -37,20 +46,20 @@ spec:
             limits:
               cpu: "300m" 
               memory: "512Mi"
-          livenessProbe:
-            httpGet:
-              path: /livez
-              port: http
-            initialDelaySeconds: 60
-            periodSeconds: 15
-            timeoutSeconds: 5
-            failureThreshold: 5
-          readinessProbe:
-            httpGet:
-              path: /readyz
-              port: http
-            initialDelaySeconds: 45
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 5
+          # livenessProbe:
+          #   httpGet:
+          #     path: /livez
+          #     port: http
+          #   initialDelaySeconds: 60
+          #   periodSeconds: 15
+          #   timeoutSeconds: 5
+          #   failureThreshold: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /readyz
+          #     port: http
+          #   initialDelaySeconds: 45
+          #   periodSeconds: 10
+          #   timeoutSeconds: 5
+          #   failureThreshold: 5
     
