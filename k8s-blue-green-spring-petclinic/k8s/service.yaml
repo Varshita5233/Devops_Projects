@@ -4,10 +4,11 @@ metadata:
   name: petclinic-svc 
   namespace: petclinic
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
     - port: 80
       targetPort: 8080
+      nodePort: 30007
   selector:
     app: petclinic
     version: blue
