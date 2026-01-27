@@ -38,15 +38,6 @@ pipeline{
                 }
             }
         }
-        // stage('scan docker image using Trivy'){
-        //     steps{
-        //         sh """
-        //         export TRIVY_CACHE_DIR=/tmp/trivy-cache
-        //         rm -rf /tmp/trivy-cache
-        //         trivy image ${DOCKER_IMAGE}:${BUILD_NUMBER} > trivyimage.txt
-        //         """
-        //     }
-        // }
         stage('push docker image'){
             steps{
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
