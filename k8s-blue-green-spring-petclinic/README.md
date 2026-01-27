@@ -8,16 +8,16 @@ The goal was to build an automated, zero-downtime deployment pipeline with image
 Developer → GitHub → Jenkins → Docker → DockerHub → AWS EKS → Users
 ```
 🛠️ **Tech Stack**
-Category        |        Tools Used
---------------------------------------------
-CI/CD                    Jenkins
-Code Repository          GitHub
-Build Tool               Maven
-Containerization         Docker
-Container Registry       DockerHub
-Orchestration            Kubernetes(AWS EKS)
-Cloud                    AWS(EC2 + EKS)
-Deployment Strategy      Blue-Green Deployment
+| Category            | Tools Used              |
+|---------------------|-------------------------|
+| CI/CD               | Jenkins                 |
+| Code Repository     | GitHub                  |
+| Build Tool          | Maven                   |
+| Containerization    | Docker                  |
+| Container Registry  | DockerHub               |
+| Orchestration       | Kubernetes (AWS EKS)    |
+| Cloud               | AWS (EC2 + EKS)         |
+| Deployment Strategy | Blue-Green Deployment   |
 
 ⚙️ **Jenkins Pipeline Stages**
 The pipeline automates the entire deployment lifecycle:
@@ -47,18 +47,17 @@ Each deployment builds a versioned image:
 ```
 jyotsna2181/petclinic:<build-number>
 ```
-
 This ensures:
 - No image overwrite
 - Traceability
 - Rollback capability
-- 
+  
 ☸️ **Kubernetes Deployment Strategy**
 Two environments run in EKS:
-Environment | Purpose
-------------------------------------
-Blue          Currently live
-Green         New version deployment
+| Environment         | Purpose                 |
+|---------------------|-------------------------|
+| Blue                | Currently live          |
+| Green               | New version deployment  |
 Both environments run separate Deployments but share a single Service.
 
 🔄 **Traffic Switching (Blue-Green Logic)**
