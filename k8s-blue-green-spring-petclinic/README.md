@@ -96,4 +96,6 @@ This project simulates a real enterprise DevOps pipeline where:
 ```
 Code → Build → Containerize → Push → Deploy → Health Check → Switch Traffic
 ```
+<img width="1920" height="1080" alt="Finalss" src="https://github.com/user-attachments/assets/c7a5b3e1-299e-46b6-ab61-ae13794eea6a" />
+
 All automated.
