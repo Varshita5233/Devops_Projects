@@ -54,10 +54,11 @@ This ensures:
   
 ☸️ **Kubernetes Deployment Strategy**
 Two environments run in EKS:
-| Environment         | Purpose                 |
-|---------------------|-------------------------|
-| Blue                | Currently live          |
-| Green               | New version deployment  |
+| Environment | Purpose                 |
+|-----------  |-------------------------|
+| Blue        | Currently live          |
+| Green       | New version deployment  |
+
 Both environments run separate Deployments but share a single Service.
 
 🔄 **Traffic Switching (Blue-Green Logic)**
