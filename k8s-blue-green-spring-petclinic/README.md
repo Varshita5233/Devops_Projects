@@ -20,7 +20,9 @@ Developer → GitHub → Jenkins → Docker → DockerHub → AWS EKS → Users
 | Cloud               | AWS (EC2 + EKS)         |
 | Deployment Strategy | Blue-Green Deployment   |
 
+
 ⚙️ **Jenkins Pipeline Stages**
+
 The pipeline automates the entire deployment lifecycle:
 1. Clean Workspace
 2. Git Checkout
@@ -31,10 +33,14 @@ The pipeline automates the entire deployment lifecycle:
 7. Health Check Validation
 8. Switch Traffic to New Version
 9. Post Cleanup
+
     
 🖥️ **Jenkins EC2 Setup**
+
 Jenkins server runs on AWS EC2 (Ubuntu, t2.large).
+
 **Installed Tools**
+
 1. Java 17
 2. Jenkins
 3. Maven
@@ -42,8 +48,9 @@ Jenkins server runs on AWS EC2 (Ubuntu, t2.large).
 5. kubectl
 6. AWS CLI
 This EC2 acts as the DevOps control server.
-🐳 Docker Image Strategy
 
+
+🐳 **Docker Image Strategy**
 Each deployment builds a versioned image:
 ```
 jyotsna2181/petclinic:<build-number>
