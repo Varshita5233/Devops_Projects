@@ -1,4 +1,5 @@
 🚀 **Spring PetClinic – Blue-Green CI/CD Deployment on AWS EKS**
+
 This project demonstrates a real-world DevOps CI/CD pipeline implementing Blue-Green Deployment using Jenkins, Docker, and AWS EKS (Kubernetes).
 
 The goal was to build an automated, zero-downtime deployment pipeline with image versioning and traffic switching between environments.
