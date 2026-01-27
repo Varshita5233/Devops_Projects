@@ -78,7 +78,7 @@ pipeline{
             steps{
                 sh """
                 echo "" switching service traffic to ${IDLE_COLOR}
-                kubectl patch svc petclinic-svc -n ${NAMESPACE} -p '{"spec:"{"selector":{"app":"petclinic","version":"green"}}}'
+                kubectl patch svc petclinic-svc -n ${NAMESPACE} -p '{"spec":{"selector":{"app":"petclinic","version":"green"}}}'
                 """
             }
         }
