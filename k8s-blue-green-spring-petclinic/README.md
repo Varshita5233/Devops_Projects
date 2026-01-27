@@ -85,11 +85,11 @@ readinessProbe:
 Ensures traffic switches only when the app is healthy.
 
 🎯 **Key Achievements**
-✔ Implemented zero-downtime deployment
-✔ Automated full CI/CD pipeline
-✔ Used image versioning instead of latest
-✔ Built real production-like Kubernetes workflow
-✔ Implemented traffic switching at Service level
+- Implemented zero-downtime deployment
+- Automated full CI/CD pipeline
+- Used image versioning instead of latest
+- Built real production-like Kubernetes workflow
+- Implemented traffic switching at Service level
 
 🚀 **Final Outcome**
 This project simulates a real enterprise DevOps pipeline where:
