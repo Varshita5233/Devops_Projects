@@ -1,0 +1,56 @@
+-------------Install Jenkins-----------------------------------------
+sudo yum update –y
+sudo wget -O /etc/yum.repos.d/jenkins.repo     https://pkg.jenkins.io/rpm-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/rpm-stable/jenkins.io-2026.key
+sudo yum upgrade
+sudo yum install java-21-amazon-corretto -y
+sudo yum install jenkins -y
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
+
+-------------Install Docker-------------------------------------------
+sudo yum update -y
+sudo yum install docker -y
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker ec2-user
+newgrp docker
+docker --version
+docker ps
+
+-------------Install Maven & Git---------------------------------------
+sudo yum install maven && sudo yum install git -y
+
+-------------Create AWS EKS Cluster------------------------------------
+1--Install kubectl on Jenkins Server
+ $ sudo apt update
+ $ sudo apt install curl
+ $ curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+ $ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+ $ kubectl version --client
+
+2--Install AWS Cli
+$ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+$ sudo apt install unzip
+$ unzip awscliv2.zip
+$ sudo ./aws/install
+$ aws --version
+
+3--Installing  eksctl
+$ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+$ cd /tmp
+$ sudo mv /tmp/eksctl /bin
+$ eksctl version
+
+4--Setup Kubernetes using eksctl
+eksctl create cluster --name virtualtechbox-cluster \
+--region ap-south-1 \
+--node-type t2.small \
+--nodes 3 \
+
+5--Verify Cluster with below command
+$ kubectl get nodes
+
