@@ -51,6 +51,7 @@ This EC2 acts as the DevOps control server.
 
 
 🐳 **Docker Image Strategy**
+
 Each deployment builds a versioned image:
 ```
 jyotsna2181/petclinic:<build-number>
@@ -61,6 +62,7 @@ This ensures:
 - Rollback capability
   
 ☸️ **Kubernetes Deployment Strategy**
+
 Two environments run in EKS:
 | Environment | Purpose                 |
 |-----------  |-------------------------|
@@ -70,6 +72,7 @@ Two environments run in EKS:
 Both environments run separate Deployments but share a single Service.
 
 🔄 **Traffic Switching (Blue-Green Logic)**
+
 The Kubernetes Service selector is updated via pipeline:
 ```
 kubectl patch svc petclinic-svc -n petclinic \
@@ -78,6 +81,7 @@ kubectl patch svc petclinic-svc -n petclinic \
 This shifts user traffic from Blue → Green without downtime.
 
 🧪 **Health Checks**
+
 Application health is validated using Spring Boot Actuator:
 ```
 livenessProbe:
@@ -100,6 +104,7 @@ Ensures traffic switches only when the app is healthy.
 - Implemented traffic switching at Service level
 
 🚀 **Final Outcome**
+
 This project simulates a real enterprise DevOps pipeline where:
 ```
 Code → Build → Containerize → Push → Deploy → Health Check → Switch Traffic
