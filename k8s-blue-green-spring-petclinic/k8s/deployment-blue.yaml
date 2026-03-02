@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic-blue 
+  namespace: petclinic
+  labels:
+    app: petclinic
+    version: blue 
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: petclinic
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: petclinic
+        version: blue
+    spec:
+      containers:
+        - name: petclinic
+          image: jyotsna2181/petclinic:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: mysql
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/petclinic
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: root
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: SPRING_SQL_INIT_MODE
+              value: always
+            - name: MYSQL_HOST
+              value: mysql
+            - name: MYSQL_PORT
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "300m" 
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveliness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+    
