@@ -1,0 +1,44 @@
+**AWS VPC Architecture with Public and Private Subnets**
+
+**Overview**
+This project demonstrates a typical AWS VPC architecture with a public subnet (for web servers) and a private subnet (for backend servers). The setup ensures secure access to resources while allowing controlled internet connectivity.
+
+**Architecture Components**
+1. VPC (10.0.0.0/16) - The main virtual private cloud where all resources are deployed.
+2. Subnets
+  Public Subnet: Hosts web servers and NAT Gateway. Accessible from the internet.
+  Private Subnet: Hosts backend servers. Not directly accessible from the internet.
+3. Internet Gateway (IGW) - Attached to the VPC to allow internet access for resources in the public subnet.
+4. NAT Gateway
+  Deployed in the public subnet.
+  Allows instances in the private subnet to access the internet (e.g., for updates) without exposing them publicly.
+5. Route Tables
+  Public Subnet Route Table
+    10.0.0.0/16 → local (internal communication within VPC)
+    0.0.0.0/0 → igw-id (internet access through Internet Gateway)
+  Private Subnet Route Table
+    10.0.0.0/16 → local
+    0.0.0.0/0 → nat-gateway-id (internet access through NAT Gateway)
+6. Security Groups (SG) & Network ACLs (NACLs)
+7. SG (Security Group): Controls inbound and outbound traffic at the instance level.
+8. NACL (Network ACL): Controls traffic at the subnet level.
+
+**Traffic Flow**
+1. Inbound Internet Traffic - Requests from the internet enter through the Internet Gateway → routed to Public Subnet Web Server.
+2. Web-to-Backend Communication - Web Server in the Public Subnet communicates with Backend Server in the Private Subnet internally within the VPC.
+3. Private Subnet Internet Access - Backend Server sends outbound traffic → routed to NAT Gateway in Public Subnet → goes out to Internet Gateway → Internet.
+
+**Use Cases**
+1. Web Applications: Host frontend web servers in Public Subnet, backend application/database servers in Private Subnet.
+2. Security-first Deployments: Keeps backend resources isolated and not publicly exposed.
+3. Scalable Architecture: Supports Auto Scaling Groups, Load Balancers, and Multi-AZ setup.
+
+**Best Practices**
+1. Enable logging and monitoring using CloudWatch and VPC Flow Logs.
+2. Use IAM roles for secure access instead of hardcoding credentials.
+3. Apply least privilege principles for SGs and NACLs.
+4. Deploy resources across multiple Availability Zones for high availability.
+
+
+![WhatsApp Image 2025-08-30 at 2 53 28 PM](https://github.com/user-attachments/assets/988f1a66-38c2-4d9f-9c5e-e0bb5d35820c)
+

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-app
+  namespace: wp-practice
+spec:
+  selector:
+    matchLabels:
+      app: admin-app
+  template:
+    metadata:
+      labels:
+        app: admin-app
+    spec:
+      containers:
+        - name: admin-app
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              name: admin-html
+      volumes:
+        - name: admin-html
+          configMap:
+            name: admin-html
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-svc
+  namespace: wp-practice
+spec:
+  selector:
+    app: admin-app
+  ports:
+    - port: 80
+      targetPort: 80
