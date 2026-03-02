@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3-Tier App Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ 3-Tier Architecture Test Page</h1>
+        
+        <div id="webTierStatus" class="status success" style="display:block">
+            ✅ Web tier is working!
+        </div>
+
+        <h3>Test App Tier Connectivity:</h3>
+        <button onclick="testAppTier()">Test App Tier</button>
+        <div id="appTierResult"></div>
+
+        <h3>Test Database Connectivity:</h3>
+        <button onclick="testDatabase()">Test Database</button>
+        <div id="dbResult"></div>
+
+        <h3>Test Full Stack:</h3>
+        <button onclick="testFullStack()">Test All Tiers</button>
+        <div id="fullStackResult"></div>
+    </div>
+
+    <script>
+        // Use environment variable or internal ALB DNS
+        const API_BASE_URL = 'http://internal-app-lb-123456.elb.amazonaws.com'; // Replace with your internal ALB DNS
+
+        async function testAppTier() {
+            const resultDiv = document.getElementById('appTierResult');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/test`);
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <pre class="success">✅ App Tier Response:\n${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<pre class="error">❌ Error: ${error.message}</pre>`;
+            }
+        }
+
+        async function testDatabase() {
+            const resultDiv = document.getElementById('dbResult');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/test-db`);
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <pre class="success">✅ Database Response:\n${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<pre class="error">❌ Error: ${error.message}</pre>`;
+            }
+        }
+
+        async function testFullStack() {
+            const resultDiv = document.getElementById('fullStackResult');
+            resultDiv.innerHTML = 'Testing...';
+            
+            const results = {};
+            
+            try {
+                const appResponse = await fetch(`${API_BASE_URL}/api/test`);
+                results.app = await appResponse.json();
+            } catch (error) {
+                results.app = { error: error.message };
+            }
+
+            try {
+                const dbResponse = await fetch(`${API_BASE_URL}/api/test-db`);
+                results.db = await dbResponse.json();
+            } catch (error) {
+                results.db = { error: error.message };
+            }
+
+            resultDiv.innerHTML = `
+                <pre class="${results.app.error || results.db.error ? 'error' : 'success'}">
+📊 Full Stack Test Results:
+                    
+Web Tier: ✅ Working
+App Tier: ${results.app.error ? '❌ ' + results.app.error : '✅ Connected'}
+Database: ${results.db.error ? '❌ ' + results.db.error : '✅ Connected'}
+                    
+App Response: ${JSON.stringify(results.app, null, 2)}
+DB Response: ${JSON.stringify(results.db, null, 2)}
+                </pre>
+            `;
+        }
+    </script>
+</body>
+</html>
