@@ -59,7 +59,7 @@
 <body>
     <div class="container">
         <h1>🏗️ 3-Tier Architecture Test Page</h1>
-        
+
         <div id="webTierStatus" class="status success" style="display:block">
             ✅ Web tier is working!
         </div>
@@ -79,12 +79,12 @@
 
     <script>
         // Use environment variable or internal ALB DNS
-        const API_BASE_URL = 'http://internal-app-lb-123456.elb.amazonaws.com'; // Replace with your internal ALB DNS
+            const API_BASE_URL = ''; // Replace with your internal ALB DNS
 
         async function testAppTier() {
             const resultDiv = document.getElementById('appTierResult');
             resultDiv.innerHTML = 'Testing...';
-            
+
             try {
                 const response = await fetch(`${API_BASE_URL}/api/test`);
                 const data = await response.json();
@@ -99,7 +99,7 @@
         async function testDatabase() {
             const resultDiv = document.getElementById('dbResult');
             resultDiv.innerHTML = 'Testing...';
-            
+
             try {
                 const response = await fetch(`${API_BASE_URL}/api/test-db`);
                 const data = await response.json();
@@ -114,9 +114,9 @@
         async function testFullStack() {
             const resultDiv = document.getElementById('fullStackResult');
             resultDiv.innerHTML = 'Testing...';
-            
+
             const results = {};
-            
+
             try {
                 const appResponse = await fetch(`${API_BASE_URL}/api/test`);
                 results.app = await appResponse.json();
@@ -134,11 +134,11 @@
             resultDiv.innerHTML = `
                 <pre class="${results.app.error || results.db.error ? 'error' : 'success'}">
 📊 Full Stack Test Results:
-                    
+
 Web Tier: ✅ Working
 App Tier: ${results.app.error ? '❌ ' + results.app.error : '✅ Connected'}
 Database: ${results.db.error ? '❌ ' + results.db.error : '✅ Connected'}
-                    
+
 App Response: ${JSON.stringify(results.app, null, 2)}
 DB Response: ${JSON.stringify(results.db, null, 2)}
                 </pre>
