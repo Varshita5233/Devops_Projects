@@ -1,0 +1,14 @@
+[Unit]
+Description=App Tier Service
+After=network.target
+
+[Service]
+Type=simple
+User=ssm-user
+WorkingDirectory=/home/ssm-user/app-tier
+Environment=DB_NAME=application  # Keep only database name if needed
+ExecStart=/usr/bin/node /home/ssm-user/app-tier/app.js
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
