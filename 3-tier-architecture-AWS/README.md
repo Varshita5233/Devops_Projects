@@ -2,7 +2,7 @@
 
 This project demonstrates a complete, secure, and highly available three‑tier web application deployed on AWS. Built entirely from scratch over three days, it incorporates industry best practices for networking, security, auto scaling, monitoring, and secrets management.
 
-![Architecture Diagram](./architecture-diagram.png)  
+![Architecture Diagram](./simplified-architecture.png)  
 
 ---
 
