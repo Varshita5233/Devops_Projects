@@ -139,8 +139,8 @@ To avoid ongoing charges, remember to:
 
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/Varshita5233/Devops_Projects/tree/main/aws-3tier-production-project)
-- [My LinkedIn Profile](https://www.linkedin.com/in/your-profile) *(replace with your actual URL)*
+- [GitHub Repository](https://github.com/Varshita5233/Devops_Projects/edit/main/3-tier-architecture-AWS)
+- [My LinkedIn Profile](https://www.linkedin.com/in/varshita2181/) 
 
 ---
 
