@@ -1,0 +1,9 @@
+sudo vim /usr/share/nginx/html/index.html 
+# Paste the HTML content
+
+sudo vim /etc/nginx/nginx.conf
+# Paste the nginx config, replacing <internal-alb-dns> with your actual ALB DNS
+
+sudo nginx -t
+sudo systemctl enable nginx
+sudo systemctl start nginx
