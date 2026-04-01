@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+    environment{
+        AWS_REGION = 'ap-south-1'
+        ECR_REPO = '911319296463.dkr.ecr.ap-south-1.amazonaws.com/varshita5233/ecr-eks-repo'
+        CLUSTER_NAME = 'eks-terraform-project-demo-dev'
+        IMAGE_TAG = "v1.${BUILD_NUMBER}"
+        KUBECONFIG = '/var/lib/jenkins/.kube/config'
+    }
+    stages {
+        stage('Checkout') {
+            steps{
+                git ''
+            }
+        }
+        stage('Build Docker Image'){
+            steps{
+                dir('app'){
+                    sh "docker build -t app:${IMAGE_TAG} ."
+                }
+            }
+        }
+        stage('Login to ECR'){
+            steps{
+                sh '''
+                aws ecr get-login-password --region $AWS_REGION | \
+                docker login --username AWS --password-stdin 911319296463.dkr.ecr.ap-south-1.amazonaws.com
+                '''
+            }
+        }
+        stage('Tag & push to ECR'){
+            steps{
+                sh """
+                docker tag app:${IMAGE_TAG} ${ECR_REPO}:${IMAGE_TAG} 
+                docker push ${ECR_REPO}:${IMAGE_TAG} 
+                """
+            }
+        }
+        stage('Update Deployment Image'){
+            steps{
+                sh """
+                sed -i 's|IMAGE_TAG|${IMAGE_TAG}|g' k8s/base/deployment.yaml
+                """
+            }
+        }
+        stage('configure kubectl'){
+            steps{
+                sh '''
+                aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
+                '''
+            }
+        }
+        stage('Deploy to kubernetes'){
+            steps{
+                sh """
+                kubectl apply -f k8s/base
+                """
+            }
+        }
+        
+    }
+}
