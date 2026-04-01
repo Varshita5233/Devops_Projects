@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eks-node-app-service
+  namespace: eks-node-app
+  labels:
+    environment: dev
+    app: eks-node-app
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    serice.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+
+spec:
+  ports:
+    - port: 80
+      targetPort: 3000
+      name: http 
+      protocol: TCP
+
+  selector:
+    app: eks-node-app
+  type: LoadBalancer
+    

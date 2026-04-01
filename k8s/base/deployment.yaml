@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eks-node-app
+  namespace: eks-node-app
+  labels:
+    app: eks-node-app
+    version: "1.0.0"
+    environment: dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: eks-node-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: eks-node-app
+    spec:
+      containers:
+        - name: eks-node-app
+          image: 911319296463.dkr.ecr.ap-south-1.amazonaws.com/varshita5233/ecr-eks-repo:latest
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: eks-app-node-config
+
+          resources:
+            requests:
+              memory: "64Mi" # Minimum guaranteed memory
+              cpu: "100m"    # 0.1 CPU core minimum
+            limits:
+              memory: "128Mi"        # Maximum memory
+              cpu: "200m"         # 0.2 CPU core maximum
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10 #wait 10s before first check
+            periodSeconds: 10 #check every 10s
+            failureThreshold: 3 #Restart after 3 failures
+            timeoutSeconds: 5
+
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3 # Remove from LB after  failures
+            timeoutSeconds: 3
+    
