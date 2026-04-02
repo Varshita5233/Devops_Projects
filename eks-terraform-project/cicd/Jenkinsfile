@@ -5,12 +5,11 @@ pipeline {
         ECR_REPO = '911319296463.dkr.ecr.ap-south-1.amazonaws.com/varshita5233/ecr-eks-repo'
         CLUSTER_NAME = 'eks-terraform-project-demo-dev'
         IMAGE_TAG = "v1.${BUILD_NUMBER}"
-        KUBECONFIG = '/var/lib/jenkins/.kube/config'
     }
     stages {
         stage('Checkout') {
             steps{
-                git ''
+                git branch: 'main', url: 'https://github.com/Varshita5233/Devops_Projects.git'
             }
         }
         stage('Build Docker Image'){
@@ -52,9 +51,12 @@ pipeline {
         }
         stage('Deploy to kubernetes'){
             steps{
+                withKubeConfig([credentialsId: 'eks-kubeconfig', secretFile: true]) {
                 sh """
+                kubectl apply -f k8s/base/namespace.yaml
                 kubectl apply -f k8s/base
                 """
+                }
             }
         }
         
