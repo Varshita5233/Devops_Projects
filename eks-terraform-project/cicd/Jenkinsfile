@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Build Docker Image'){
             steps{
-                dir('app'){
+                dir('eks-terraform-project/app'){
                     sh "docker build -t app:${IMAGE_TAG} ."
                 }
             }
@@ -46,8 +46,8 @@ pipeline {
             steps{
                 withKubeConfig([credentialsId: 'eks-kubeconfig', secretFile: true]) {
                 sh """
-                kubectl apply -f k8s/base/namespace.yaml
-                kubectl apply -f k8s/base
+                kubectl apply -f eks-terraform-project/k8s/base/namespace.yaml
+                kubectl apply -f eks-terraform-project/k8s/base
                 """
                 }
             }
