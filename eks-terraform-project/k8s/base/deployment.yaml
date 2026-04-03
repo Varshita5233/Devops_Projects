@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: eks-node-app
-          image: 911319296463.dkr.ecr.ap-south-1.amazonaws.com/varshita5233/ecr-eks-repo:test
+          image: 911319296463.dkr.ecr.ap-south-1.amazonaws.com/varshita5233/ecr-eks-repo:IMAGE_PLACEHOLDER
           ports:
             - containerPort: 3000
               protocol: TCP

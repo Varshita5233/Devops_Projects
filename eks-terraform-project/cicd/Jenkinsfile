@@ -38,7 +38,7 @@ pipeline {
         stage('Update Deployment Image'){
             steps{
                 sh """
-                sed -i 's|IMAGE_TAG|${IMAGE_TAG}|g' k8s/base/deployment.yaml
+                sed -i 's|IMAGE_PLACEHOLDER|${IMAGE_TAG}|g' k8s/base/deployment.yaml
                 """
             }
         }
