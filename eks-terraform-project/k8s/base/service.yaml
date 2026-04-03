@@ -8,7 +8,7 @@ metadata:
     app: eks-node-app
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
-    serice.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 
 spec:
   ports:

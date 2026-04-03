@@ -42,13 +42,6 @@ pipeline {
                 """
             }
         }
-        stage('configure kubectl'){
-            steps{
-                sh '''
-                aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
-                '''
-            }
-        }
         stage('Deploy to kubernetes'){
             steps{
                 withKubeConfig([credentialsId: 'eks-kubeconfig', secretFile: true]) {
