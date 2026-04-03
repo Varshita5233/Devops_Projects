@@ -54,4 +54,12 @@ pipeline {
         }
         
     }
+    post {
+        success {
+            echo "Deployed image: ${ECR_REPO}:${IMAGE_TAG}"
+        }
+        failure {
+            echo "Pipeline failed — check logs above"
+        }
+    }
 }
