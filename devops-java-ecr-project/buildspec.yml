@@ -32,4 +32,4 @@ phases:
 
 artifacts:
   files:
-    - imagedefinitions.json
+    - devops-java-ecr-project/imagedefinitions.json
