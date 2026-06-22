@@ -23,6 +23,7 @@ phases:
 
   post_build:
     commands:
+      - cd devops-java-ecr-project
       - echo "Pushing Docker image to ECR..."
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-dev-repo:latest
       - echo "Generating imagedefinitions.json for CodePipeline..."
