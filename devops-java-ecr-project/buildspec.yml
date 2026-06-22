@@ -12,6 +12,7 @@ phases:
 
   build:
     commands:
+      - cd devops-java-ecr-project
       - mvn clean package -DskipTests
       - docker build -t java-spring-ecr:latest .
       - docker tag java-spring-ecr:latest $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-dev-repo:latest
