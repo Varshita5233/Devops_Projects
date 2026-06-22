@@ -7,27 +7,19 @@ phases:
 
   pre_build:
     commands:
-      - echo "Current directory: $(pwd)"
-      - echo "Listing files: $(ls -la)"
       - echo "Logging into Amazon ECR..."
       - aws ecr get-login-password --region ap-south-2 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com
 
   build:
     commands:
-      - echo "Building Java JAR with Maven..."
       - mvn clean package -DskipTests
-      - echo "Building Docker image..."
       - docker build -t java-spring-ecr:latest .
-      - echo "Tagging Docker image for ECR..."
       - docker tag java-spring-ecr:latest $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-dev-repo:latest
 
   post_build:
     commands:
-      - echo "Pushing Docker image to ECR..."
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-dev-repo:latest
-      - echo "Generating imagedefinitions.json..."
       - printf '[{"name":"java-app","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-dev-repo:latest > imagedefinitions.json
-      - echo "Force ECS deployment..."
       - aws ecs update-service --cluster java-spring-ecr-dev-cluster --service java-spring-ecr-dev-service --force-new-deployment --region ap-south-2
 
 artifacts:
