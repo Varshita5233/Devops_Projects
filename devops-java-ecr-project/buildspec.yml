@@ -7,11 +7,13 @@ phases:
 
   pre_build:
     commands:
+      - cd devops-java-ecr-project
       - echo "Logging into Amazon ECR..."
       - aws ecr get-login-password --region ap-south-2 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com
 
   build:
     commands:
+      - cd devops-java-ecr-project
       - echo "Building Java JAR with Maven..."
       - mvn clean package -DskipTests
       - echo "Building Docker image..."
