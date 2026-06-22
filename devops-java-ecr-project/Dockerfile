@@ -1,7 +1,7 @@
 FROM maven:3.8.4-openjdk-11-slim AS BUILD
 WORKDIR /app
 COPY pom.xml .
-RUN mvn dependency:go offline
+RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package -DskipTests 
 
