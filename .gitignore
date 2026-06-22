@@ -1,0 +1,13 @@
+# Terraform state files (SENSITIVE!)
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Java build files
+target/
+*.class
+
+# IDE files
+.vscode/
+.idea/
+*.iml
