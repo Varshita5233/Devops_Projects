@@ -12,9 +12,6 @@ This repository contains a **fully automated, zero-downtime CI/CD pipeline** for
 
 Instead of passive learning, this project was built as a **"One-Day DevOps Sprint"** to demonstrate real-world cloud engineering, security hardening, and infrastructure automation.
 
-**Live Application:** [http://java-ecr-project-dev-alb-1839657292.ap-south-2.elb.amazonaws.com](http://java-ecr-project-dev-alb-1839657292.ap-south-2.elb.amazonaws.com)  
-*(Refresh the page to see different DevOps jokes!)*
-
 ---
 
 ## 🛠️ Tech Stack
@@ -32,17 +29,27 @@ Instead of passive learning, this project was built as a **"One-Day DevOps Sprin
 ---
 
 ## 🧠 Architecture Diagram
-Internet (Port 80)
-↓
-[ Application Load Balancer (ALB) ]
-↓
-[ Security Group (Port 80 allowed from My IP) ]
-↓
-[ ECS Fargate Tasks (1 Replica) ] ← Port 8080 (Allowed only from ALB SG)
-↓
-[ ECR Repository (Docker Image) ]
-↓
-[ CodeBuild Pipeline (Build → Scan → Push → Deploy) ]
+
+```mermaid
+graph TD
+    A[User Browser] -->|Port 80| B[Application Load Balancer]
+    B --> C[ECS Fargate Tasks]
+    C --> D[ECR Repository]
+    
+    E[GitHub Push] --> F[AWS CodeBuild Pipeline]
+    F -->|1. Build Java JAR| F
+    F -->|2. Build Docker Image| F
+    F -->|3. Trivy Security Scan| F
+    F -->|4. Push to ECR| D
+    F -->|5. Deploy to ECS| C
+    
+    style A fill:#232F3E,color:#fff,stroke:#FF9900,stroke-width:2px
+    style B fill:#232F3E,color:#fff,stroke:#FF9900,stroke-width:2px
+    style C fill:#232F3E,color:#fff,stroke:#FF9900,stroke-width:2px
+    style D fill:#232F3E,color:#fff,stroke:#FF9900,stroke-width:2px
+    style E fill:#232F3E,color:#fff,stroke:#FF9900,stroke-width:2px
+    style F fill:#232F3E,color:#fff,stroke:#FF9900,stroke-width:2px
+```
 
 ---
 
@@ -60,26 +67,6 @@ Internet (Port 80)
 
 ---
 
-## 📁 Project Structure
-devops-java-ecr-project/
-├── src/
-│ └── main/java/com/demo/
-│ ├── DemoApplication.java # Spring Boot entry point
-│ └── JokeController.java # REST API (DevOps jokes)
-├── terraform/
-│ ├── main.tf # Root module (VPC, ALB, ECS, ECR)
-│ ├── variables.tf # Input variables
-│ ├── dev.tfvars # Environment-specific values
-│ ├── backend.tf # S3 Remote State config
-│ └── modules/
-│ └── global-tags/ # Custom module for mandatory tagging
-├── Dockerfile # Multi-stage build (Maven + Alpine JRE)
-├── buildspec.yml # CodeBuild CI/CD instructions
-├── Jenkinsfile # (Optional Jenkins pipeline for reference)
-└── pom.xml # Maven dependencies
-
----
-
 ## 🚀 How to Deploy (Infrastructure)
 
 ### Prerequisites
@@ -88,44 +75,48 @@ devops-java-ecr-project/
 - Docker installed (for local testing).
 
 ### Step 1: Clone the Repository
-```bash
+```
 git clone https://github.com/Varshita5233/Devops_Projects.git
 cd Devops_Projects/devops-java-ecr-project/terraform
+```
 
 ### Step 2: Initialize & Apply Terraform
-```bash
+```
 terraform init
 terraform apply -var-file="dev.tfvars" -auto-approve
+```
 
 ### Step 3: Run the CI/CD Pipeline
-Push a change to the main branch, or manually trigger AWS CodeBuild to:
-Compile the Java code.
-Build the Docker image.
-Scan for vulnerabilities (Trivy).
-Push to ECR.
-Deploy to ECS Fargate.
+- Push a change to the main branch, or manually trigger AWS CodeBuild to:
+- Compile the Java code.
+- Build the Docker image.
+- Scan for vulnerabilities (Trivy).
+- Push to ECR.
+- Deploy to ECS Fargate.
 
 ### Step 4: Access the Application
 Get the ALB DNS name from Terraform outputs or the AWS Console:
-```bash
+```
 terraform output alb_dns_name
 Visit the URL in your browser.
+```
 
 ### 🧹 Cleanup (Avoid AWS Charges)
-```bash
-terraform destroy -var-file="dev.tfvars" -auto-approve
+```
+terraform destroy -auto-approve
+```
 
 ### 🔒 Security & DevSecOps Highlights
-This project successfully implements real-world security gates:
-CVE Remediation: Discovered and patched CVE-2025-24813 and CVE-2026-41293 in Apache Tomcat by overriding the Tomcat version to 9.0.118.
-Pipeline Blocking: The CI/CD pipeline fails automatically if Trivy detects any CRITICAL vulnerability, preventing vulnerable images from reaching production.
-Network Segmentation: The ECS tasks run in a private network tier, and only the ALB is exposed to the internet.
-Secrets Handling: Environment variables are securely sourced from AWS SSM Parameter Store.
+- This project successfully implements real-world security gates:
+- CVE Remediation: Discovered and patched CVE-2025-24813 and CVE-2026-41293 in Apache Tomcat by overriding the Tomcat version to 9.0.118.
+- Pipeline Blocking: The CI/CD pipeline fails automatically if Trivy detects any CRITICAL vulnerability, preventing vulnerable images from reaching production.
+- Network Segmentation: The ECS tasks run in a private network tier, and only the ALB is exposed to the internet.
+- Secrets Handling: Environment variables are securely sourced from AWS SSM Parameter Store.
 
 ### 🤝 Connect with Me
 Varshita Rajana
 DevOps Engineer | HashiCorp Certified: Terraform Associate (004)
-https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
-https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
-https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white
+- https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
+- https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
+- https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white
 
