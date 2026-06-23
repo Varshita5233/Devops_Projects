@@ -5,7 +5,7 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package -DskipTests 
 
-FROM eclipse-temurin:11-jre
+FROM eclipse-temurin:11-jre-alpine
 WORKDIR /app
 COPY --from=BUILD /app/target/devops-sprint-1.0.0.jar app.jar
 EXPOSE 8080
