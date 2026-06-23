@@ -9,29 +9,18 @@ phases:
     commands:
       - echo "Logging into Amazon ECR..."
       - aws ecr get-login-password --region ap-south-2 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com
-      - echo "Getting commit ID..."
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - echo "Commit hash: $COMMIT_HASH"
 
   build:
     commands:
       - cd devops-java-ecr-project
-      - echo "Building Java JAR with Maven..."
       - mvn clean package -DskipTests
-      - echo "Building Docker image..."
       - docker build -t java-spring-ecr-project:latest .
-      - echo "Tagging image with commit hash..."
-      - docker tag java-spring-ecr-project:latest $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:$COMMIT_HASH
       - docker tag java-spring-ecr-project:latest $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest
 
   post_build:
     commands:
-      - echo "Pushing Docker image to ECR..."
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:$COMMIT_HASH
-      - echo "Generating imagedefinitions.json..."
       - printf '[{"name":"java-app","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest > imagedefinitions.json
-      - echo "Force ECS deployment..."
       - aws ecs update-service --cluster java-ECR-project-dev-cluster --service java-ECR-project-dev-service --force-new-deployment --region ap-south-2
 
 artifacts:

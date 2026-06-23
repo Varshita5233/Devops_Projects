@@ -86,6 +86,7 @@ module "ecr" {
 
   repository_name = "java-spring-ecr-project"
   repository_type = "private"
+  repository_image_tag_mutability = "MUTABLE"
   create_lifecycle_policy = false
 
   tags = module.global_tags.tags
