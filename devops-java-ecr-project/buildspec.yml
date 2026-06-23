@@ -15,20 +15,16 @@ phases:
 
   build:
     commands:
-      - echo "Building Java JAR with Maven..."
+      - cd devops-java-ecr-project
       - mvn clean package -DskipTests
-      - echo "Building Docker image..."
-      - docker build -t java-spring-ecr:latest .
-      - docker tag java-spring-ecr:latest $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest
-      - docker tag java-spring-ecr:latest $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:$COMMIT_HASH
+      - docker build -t java-spring-ecr-project:latest .
+      - docker tag java-spring-ecr-project:latest $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:$COMMIT_HASH
 
   post_build:
     commands:
-      - echo "Pushing Docker image to ECR..."
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:$COMMIT_HASH
-      - printf '[{"name":"java-app","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest > imagedefinitions.json
-      - aws ecs update-service --cluster java-spring-ecr-dev-cluster --service java-spring-ecr-dev-service --force-new-deployment --region ap-south-2
+      - printf '[{"name":"java-app","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:$COMMIT_HASH > imagedefinitions.json
+      - aws ecs update-service --cluster java-ECR-project-dev-cluster --service java-ECR-project-dev-service --force-new-deployment --region ap-south-2
 
 artifacts:
   files:
