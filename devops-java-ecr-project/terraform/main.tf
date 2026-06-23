@@ -33,20 +33,51 @@ module "vpc" {
   tags                    = module.global_tags.tags
 }
 
-resource "aws_security_group" "app_sg" {
-  name        = "${var.project_name}-${var.environment}-sg"
-  description = "Allow traffic for app"
+# ---- Security Group for ALB (Allows Internet traffic on port 80) ----
+resource "aws_security_group" "alb_sg" {
+  name        = "${var.project_name}-${var.environment}-alb-sg"
+  description = "Allow HTTP traffic to ALB"
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    from_port   = var.container_port
-    to_port     = var.container_port
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
-
+    cidr_blocks = ["0.0.0.0/0"]   # Allow traffic from anywhere on port 80
   }
-  tags = module.global_tags.tags
 
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = module.global_tags.tags
+}
+
+# ---- Security Group for ECS Tasks (Allows traffic from ALB on port 8080) ----
+resource "aws_security_group" "app_sg" {
+  name        = "${var.project_name}-${var.environment}-ecs-sg"
+  description = "Allow traffic from ALB to ECS tasks"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port       = var.container_port   # 8080
+    to_port         = var.container_port   # 8080
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]   # ONLY allow traffic from the ALB SG!
+    # (This is better than opening to 0.0.0.0/0)
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = module.global_tags.tags
 }
 
 module "ecr" {
@@ -65,7 +96,7 @@ resource "aws_lb" "main" {
   name                       = "${var.project_name}-${var.environment}-alb"
   internal                   = false
   load_balancer_type         = "application"
-  security_groups            = [aws_security_group.app_sg.id]
+  security_groups            = [aws_security_group.alb_sg.id]
   subnets                    = module.vpc.public_subnets
   enable_deletion_protection = false
   tags                       = module.global_tags.tags
