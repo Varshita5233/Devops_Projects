@@ -43,3 +43,7 @@ variable "memory" {
   type    = number
   default = 512
 }
+variable "my_ip" {
+  description = "My public IP address for security restriction"
+  type = string
+}

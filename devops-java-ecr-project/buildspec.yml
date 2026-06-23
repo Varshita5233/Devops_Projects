@@ -16,6 +16,8 @@ phases:
       - mvn clean package -DskipTests
       - docker build -t java-spring-ecr-project:latest .
       - docker tag java-spring-ecr-project:latest $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest
+      - echo "Scanning Docker image for CRITICAL vulnerabilities with Trivy..."
+      - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest --exit-code 1 --severity CRITICAL
 
   post_build:
     commands:
