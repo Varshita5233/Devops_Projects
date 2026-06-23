@@ -43,7 +43,7 @@ resource "aws_security_group" "alb_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]   # Allow traffic from anywhere on port 80
+    cidr_blocks = [var.my_ip]   # Allow traffic only from my laptop IP on port 80
   }
 
   egress {
