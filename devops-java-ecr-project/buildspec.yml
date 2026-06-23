@@ -8,21 +8,21 @@ phases:
   pre_build:
     commands:
       - echo "Logging into Amazon ECR..."
-      - aws ecr get-login-password --region ap-south-2 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com
+      - aws ecr get-login-password --region ap-south-2 | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com
 
   build:
     commands:
       - cd devops-java-ecr-project
       - mvn clean package -DskipTests
       - docker build -t java-spring-ecr-project:latest .
-      - docker tag java-spring-ecr-project:latest $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest
+      - docker tag java-spring-ecr-project:latest $ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest
       - echo "Scanning Docker image for CRITICAL vulnerabilities with Trivy..."
-      - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest --exit-code 1 --severity CRITICAL
+      - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image $ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest --exit-code 1 --severity CRITICAL
 
   post_build:
     commands:
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest
-      - printf '[{"name":"java-app","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest > imagedefinitions.json
+      - docker push $ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest
+      - printf '[{"name":"java-app","imageUri":"%s"}]' $ACCOUNT_ID.dkr.ecr.ap-south-2.amazonaws.com/java-spring-ecr-project:latest > imagedefinitions.json
       - aws ecs update-service --cluster java-ECR-project-dev-cluster --service java-ECR-project-dev-service --force-new-deployment --region ap-south-2
 
 artifacts:
