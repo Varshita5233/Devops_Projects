@@ -113,10 +113,12 @@ terraform destroy -auto-approve
 - Network Segmentation: The ECS tasks run in a private network tier, and only the ALB is exposed to the internet.
 - Secrets Handling: Environment variables are securely sourced from AWS SSM Parameter Store.
 
-### 🤝 Connect with Me
-Varshita Rajana
+## 🤝 Connect with Me
+
+**Varshita Rajana**  
 DevOps Engineer | HashiCorp Certified: Terraform Associate (004)
-- https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
-- https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
-- https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/varshita2181)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Varshita5233)
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:varshita.rajana2001@gmail.com)
 
