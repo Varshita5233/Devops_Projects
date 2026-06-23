@@ -18,7 +18,7 @@ Instead of passive learning, this project was built as a **"One-Day DevOps Sprin
 
 | **Category** | **Technology** |
 | :--- | :--- |
-| **Language** | Java 11 (Spring Boot 2.7.18) |
+| **Language** | Java 17 (Spring Boot 3.5.15) |
 | **Containerization** | Docker (Multi-stage builds, Alpine base) |
 | **Orchestration** | AWS ECS Fargate (Serverless) |
 | **Infrastructure** | Terraform (VPC, ALB, ECR, IAM, Security Groups) |
