@@ -72,7 +72,7 @@ jobs:
             --wait --timeout 5m --atomic
 
       # Deploy with Frontend
-      - name: Deploy with Helm
+      - name: Deploy Frontend with Helm
         run: |
           helm upgrade --install myapp ./eks-demo/helm/myapp \
             --namespace prod \

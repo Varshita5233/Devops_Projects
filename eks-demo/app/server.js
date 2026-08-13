@@ -67,7 +67,7 @@ const server = http.createServer(async (req, res) => {
       <body>
         <div class="card">
           <div class="badge">EKS &middot; Microservices</div>
-          <h1>Frontend → Backend 👋</h1>
+          <h1>Frontend → Backend</h1>
           <div class="grid">
             <div class="stat"><div class="label">Frontend pod</div><div class="value">${os.hostname()}</div></div>
             <div class="stat"><div class="label">Version</div><div class="value">${VERSION}</div></div>
