@@ -1,5 +1,5 @@
 # DEV overrides - minimal resources, fewer replicas
-replicaCount: 1
+replicaCount: 2
 
 appVersion: "v1-dev"
 
