@@ -18,10 +18,10 @@ const server = http.createServer((req, res) => {
     <html>
       <head><title>EKS Demo</title></head>
       <body style="font-family: sans-serif; text-align: center; padding-top: 80px; background:#0f172a; color:#e2e8f0;">
-        <h1>Hello from EKS 👋</h1>
+        <h1>Hello from EKS</h1>
         <h2>Version: ${VERSION}</h2>
         <p style="font-size: 22px;">Served by pod: <b style="color:#38bdf8;">${os.hostname()}</b></p>
-        <p style="color:#64748b;">Refresh the page — the pod name changes as the load balancer spreads requests across pods.</p>
+        <p style="color:#64748b;">Refresh the page, the pod name changes as the load balancer spreads requests across pods.</p>
       </body>
     </html>
   `);
