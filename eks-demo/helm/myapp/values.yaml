@@ -10,7 +10,7 @@ image:
 appVersion: "v1"
 
 service:
-  type: LoadBalancer   # gives you a public URL to demo (AWS creates an ELB)
+  type: ClusterIP     
   port: 80
   targetPort: 8080
 
@@ -27,3 +27,6 @@ autoscaling:
   minReplicas: 2
   maxReplicas: 10
   targetCPUUtilizationPercentage: 70
+
+ingress:
+  enabled: true
