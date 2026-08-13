@@ -56,7 +56,7 @@ jobs:
           helm upgrade --install myapp ./eks-demo/helm/myapp \
             --namespace dev \
             --create-namespace \
-            -f ./eks-repo/helm/myapp/values-dev.yaml \
+            -f ./eks-demo/helm/myapp/values-dev.yaml \
             --set image.repository=$ECR_REGISTRY/$ECR_REPOSITORY \
             --set image.tag=$IMAGE_TAG \
             --wait --timeout 5m --atomic
