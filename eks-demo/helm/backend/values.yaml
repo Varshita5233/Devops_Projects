@@ -1,0 +1,32 @@
+# DEFAULT values - environments override what they need
+
+replicaCount: 2
+
+image:
+  repository: REPLACE_WITH_YOUR_ECR_URL/myapp
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+appVersion: "v1"
+
+service:
+  type: ClusterIP     
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+ingress:
+  enabled: true
