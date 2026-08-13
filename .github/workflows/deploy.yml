@@ -54,9 +54,9 @@ jobs:
       - name: Deploy with Helm
         run: |
           helm upgrade --install myapp ./eks-demo/helm/myapp \
-            --namespace dev \
+            --namespace prod \
             --create-namespace \
-            -f ./eks-demo/helm/myapp/values-dev.yaml \
+            -f ./eks-demo/helm/myapp/values-prod.yaml \
             --set image.repository=$ECR_REGISTRY/$ECR_REPOSITORY \
             --set image.tag=$IMAGE_TAG \
             --wait --timeout 5m --atomic
