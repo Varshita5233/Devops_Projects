@@ -3,6 +3,8 @@ name: Build and Deploy to EKS
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'eks-demo/**'
 
 env:
   AWS_REGION: ap-south-1
