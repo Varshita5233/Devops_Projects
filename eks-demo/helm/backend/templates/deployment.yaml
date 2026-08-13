@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-myapp
+  name: {{ .Release.Name }}-backend
   labels:
-    app: {{ .Release.Name }}-myapp
+    app: {{ .Release.Name }}-backend
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}

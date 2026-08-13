@@ -85,6 +85,6 @@ jobs:
       # 7. Show what got deployed
       - name: Verify deployment
         run: |
-          kubectl get pods -n dev
-          kubectl get svc -n dev
-          kubectl get ingress -n dev
+          kubectl get pods -n prod
+          kubectl get svc -n prod
+          kubectl get ingress -n prod
