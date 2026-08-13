@@ -1,0 +1,12 @@
+# DEV overrides - minimal resources, fewer replicas
+replicaCount: 1
+
+appVersion: "v1-dev"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: false

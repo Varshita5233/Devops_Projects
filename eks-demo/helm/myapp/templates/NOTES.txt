@@ -1,0 +1,11 @@
+Your app "{{ .Release.Name }}" is deployed!
+
+Get the public URL (may take 1-2 min for the load balancer to be ready):
+
+  kubectl get svc {{ .Release.Name }}-myapp -n {{ .Release.Namespace }} \
+    -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+
+Then open http://<that-hostname> in your browser.
+
+Check the pods:
+  kubectl get pods -n {{ .Release.Namespace }}
