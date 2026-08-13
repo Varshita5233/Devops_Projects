@@ -53,7 +53,7 @@ jobs:
       # 6. Deploy with Helm - upgrade if exists, install if new (idempotent)
       - name: Deploy with Helm
         run: |
-          helm upgrade --install myapp ./helm/myapp \
+          helm upgrade --install myapp ./eks-demo/helm/myapp \
             --namespace dev \
             --create-namespace \
             -f ./helm/myapp/values-dev.yaml \
