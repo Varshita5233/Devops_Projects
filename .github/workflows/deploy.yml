@@ -9,7 +9,8 @@ on:
 
 env:
   AWS_REGION: ap-south-1
-  ECR_REPOSITORY: myapp
+  ECR_FRONTEND: myapp
+  ECR_BACKEND: backend
   EKS_CLUSTER: demo-cluster
 
 jobs:
@@ -35,29 +36,49 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       # 4. Build the image, tag it with the commit SHA (immutable!), push to ECR
-      - name: Build and push image
+      - name: Build and push frontend
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./eks-demo/app
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/$ECR_FRONTEND:$IMAGE_TAG ./eks-demo/app
+          docker push $ECR_REGISTRY/$ECR_FRONTEND:$IMAGE_TAG
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
           echo "ECR_REGISTRY=$ECR_REGISTRY" >> $GITHUB_ENV
+
+      - name: Build and push backend
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_BACKEND:$IMAGE_TAG ./eks-demo/backend
+          docker push $ECR_REGISTRY/$ECR_BACKEND:$IMAGE_TAG
+          echo "ECR_REGISTRY=$ECR_REGISTRY" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
       # 5. Point kubectl at the EKS cluster
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER
 
-      # 6. Deploy with Helm - upgrade if exists, install if new (idempotent)
+      # 6. Deploy the BACKEND first (frontend depends on it)
+      - name: Deploy backend with Helm
+        run: |
+          helm upgrade --install backend ./eks-demo/helm/backend \
+            --namespace prod \
+            --create-namespace \
+            --set image.repository=$ECR_REGISTRY/$ECR_BACKEND \
+            --set image.tag=$IMAGE_TAG \
+            --wait --timeout 5m --atomic
+
+      # Deploy with Frontend
       - name: Deploy with Helm
         run: |
           helm upgrade --install myapp ./eks-demo/helm/myapp \
             --namespace prod \
             --create-namespace \
             -f ./eks-demo/helm/myapp/values-prod.yaml \
-            --set image.repository=$ECR_REGISTRY/$ECR_REPOSITORY \
+            --set image.repository=$ECR_REGISTRY/$ECR_FRONTEND \
             --set image.tag=$IMAGE_TAG \
             --wait --timeout 5m --atomic
 
@@ -66,3 +87,4 @@ jobs:
         run: |
           kubectl get pods -n dev
           kubectl get svc -n dev
+          kubectl get ingress -n dev
