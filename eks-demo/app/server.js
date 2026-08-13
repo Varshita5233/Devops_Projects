@@ -67,17 +67,17 @@ const server = http.createServer(async (req, res) => {
       <body>
         <div class="card">
           <div class="badge">EKS &middot; Microservices</div>
-          <h1>Frontend → Backend</h1>
+          <h1>Frontend to Backend</h1>
           <div class="grid">
             <div class="stat"><div class="label">Frontend pod</div><div class="value">${os.hostname()}</div></div>
             <div class="stat"><div class="label">Version</div><div class="value">${VERSION}</div></div>
           </div>
-          <div class="arrow">⬇ calls backend service (pod-to-pod) ⬇</div>
+          <div class="arrow">calls backend service (pod-to-pod)</div>
           <div class="backend">
-            <div class="label">✓ Backend responded from pod</div>
+            <div class="label">Backend responded from pod</div>
             <div class="value">${backendPod}</div>
           </div>
-          <p class="hint"><span class="live">● LIVE</span> &nbsp; Auto-refreshes every 2s. Watch BOTH pod names change — the frontend load-balances across its pods, and it calls the backend service which load-balances across backend pods.</p>
+          <p class="hint"><span class="live">LIVE</span> &nbsp; Auto-refreshes every 2s. Watch BOTH pod names change — the frontend load-balances across its pods, and it calls the backend service which load-balances across backend pods.</p>
         </div>
       </body>
     </html>
