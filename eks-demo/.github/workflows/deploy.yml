@@ -1,0 +1,66 @@
+name: Build and Deploy to EKS
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: myapp
+  EKS_CLUSTER: demo-cluster
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Get the code
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Authenticate to AWS using the secrets you set in GitHub
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # 3. Log in to ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 4. Build the image, tag it with the commit SHA (immutable!), push to ECR
+      - name: Build and push image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd app
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "ECR_REGISTRY=$ECR_REGISTRY" >> $GITHUB_ENV
+
+      # 5. Point kubectl at the EKS cluster
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER
+
+      # 6. Deploy with Helm - upgrade if exists, install if new (idempotent)
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install myapp ./helm/myapp \
+            --namespace dev \
+            --create-namespace \
+            -f ./helm/myapp/values-dev.yaml \
+            --set image.repository=$ECR_REGISTRY/$ECR_REPOSITORY \
+            --set image.tag=$IMAGE_TAG \
+            --wait --timeout 5m --atomic
+
+      # 7. Show what got deployed
+      - name: Verify deployment
+        run: |
+          kubectl get pods -n dev
+          kubectl get svc -n dev
