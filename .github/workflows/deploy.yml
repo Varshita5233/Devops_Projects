@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'eks-demo/**'
+      - '.github/workflows/deploy.yml'
 
 env:
   AWS_REGION: ap-south-1
