@@ -3,22 +3,27 @@ const os = require('os');
 
 const PORT = process.env.PORT || 8080;
 const VERSION = process.env.APP_VERSION || 'v1';
-// The backend service URL - uses Kubernetes service DNS name
 const BACKEND_URL = process.env.BACKEND_URL || 'http://backend-service';
 const startTime = Date.now();
 let requestCount = 0;
 
-// Helper to call the backend service (pod-to-pod / east-west traffic)
+// Prometheus metrics counters
+let httpRequestsTotal = 0;
+let backendCallsTotal = 0;
+let backendErrorsTotal = 0;
+
 function callBackend() {
   return new Promise((resolve) => {
+    backendCallsTotal++;
     http.get(BACKEND_URL, (resp) => {
       let data = '';
       resp.on('data', chunk => data += chunk);
       resp.on('end', () => {
         try { resolve(JSON.parse(data)); }
-        catch { resolve({ error: 'bad response from backend' }); }
+        catch { backendErrorsTotal++; resolve({ error: 'bad response from backend' }); }
       });
     }).on('error', (err) => {
+      backendErrorsTotal++;
       resolve({ error: 'could not reach backend: ' + err.message });
     });
   });
@@ -31,10 +36,27 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Prometheus metrics endpoint
+  if (req.url === '/metrics') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end(
+      '# HELP http_requests_total Total HTTP requests received\n' +
+      '# TYPE http_requests_total counter\n' +
+      `http_requests_total ${httpRequestsTotal}\n` +
+      '# HELP backend_calls_total Total calls made to the backend\n' +
+      '# TYPE backend_calls_total counter\n' +
+      `backend_calls_total ${backendCallsTotal}\n` +
+      '# HELP backend_errors_total Total failed backend calls\n' +
+      '# TYPE backend_errors_total counter\n' +
+      `backend_errors_total ${backendErrorsTotal}\n`
+    );
+    return;
+  }
+
+  httpRequestsTotal++;
   requestCount++;
   const uptime = Math.floor((Date.now() - startTime) / 1000);
 
-  // Call the backend service - THIS is the pod-to-pod communication
   const backend = await callBackend();
   const backendPod = backend.backendPod || backend.error || 'unknown';
 
@@ -77,7 +99,7 @@ const server = http.createServer(async (req, res) => {
             <div class="label">Backend responded from pod</div>
             <div class="value">${backendPod}</div>
           </div>
-          <p class="hint"><span class="live">LIVE</span> &nbsp; Auto-refreshes every 2s. Watch BOTH pod names change — the frontend load-balances across its pods, and it calls the backend service which load-balances across backend pods.</p>
+          <p class="hint"><span class="live">LIVE</span> &nbsp; Auto-refreshes every 2s. Metrics exposed at /metrics for Prometheus.</p>
         </div>
       </body>
     </html>

@@ -30,3 +30,6 @@ autoscaling:
 
 ingress:
   enabled: true
+
+serviceMonitor:
+  enabled: true
