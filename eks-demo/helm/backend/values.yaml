@@ -1,32 +1,27 @@
-# DEFAULT values - environments override what they need
-
 replicaCount: 2
 
 image:
-  repository: REPLACE_WITH_YOUR_ECR_URL/myapp
+  repository: REPLACE_WITH_ECR/backend
   tag: "latest"
   pullPolicy: IfNotPresent
 
-appVersion: "v1"
-
 service:
-  type: ClusterIP     
   port: 80
   targetPort: 8080
 
 resources:
   requests:
+    cpu: 50m           # REQUIRED for HPA to calculate against
+    memory: 64Mi
+  limits:
     cpu: 100m
     memory: 128Mi
-  limits:
-    cpu: 250m
-    memory: 256Mi
 
 autoscaling:
-  enabled: false
+  enabled: true
   minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 70
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 50
 
 ingress:
   enabled: true
