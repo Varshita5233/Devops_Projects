@@ -1,0 +1,18 @@
+kubectl run load-heavy --image=busybox -n prod --restart=Never -- /bin/sh -c "while true; do wget -q -O- http://myapp-myapp & wget -q -O- http://myapp-myapp & wget -q -O- http://myapp-myapp; done"
+
+kubectl delete pod load-heavy -n prod
+
+kubectl autoscale deployment myapp-myapp -n prod --cpu-percent=20 --min=3 --max=10
+kubectl get hpa -n prod -w
+
+kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090
+kubectl port-forward -n monitoring svc/monitoring-grafana 3001:80
+
+kubectl scale deployment backend -n prod --replicas=0
+
+kubectl get secret -n monitoring monitoring-grafana -o jsonpath="{.data.admin-password}" | %{ [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
+
+kubectl patch hpa myapp-frontend -n prod type='json' p='[{"op":"replace","path":"/spec/metrics/0/resource/target/averageUtilization","value":30}]'
+
+
+
