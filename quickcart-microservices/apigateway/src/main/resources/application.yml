@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  security:
+    oauth2:
+          resourceserver:
+            jwt:
+              issuer-uri: ${AUTH_SERVER_ISSUER:http://localhost:9000}
+  cloud:
+    gateway:
+          routes:
+            - id: product-service
+              uri: lb://product-service
+              predicates:
+                - Path=/api/products/**,/api/products
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: productsCircuitBreaker
+                    fallbackUri: forward:/fallback/product-service
+
+            - id: order-service
+              uri: lb://order-service
+              predicates:
+                - Path=/api/orders/**,/api/orders
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: ordersCircuitBreaker
+                    fallbackUri: forward:/fallback/order-service
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}

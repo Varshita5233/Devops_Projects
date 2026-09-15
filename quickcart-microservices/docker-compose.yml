@@ -1,0 +1,53 @@
+services:
+
+  discovery-server:
+    build: ./discovery-server
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    build: ./apigateway
+    container_name: api-gateway
+    depends_on:
+      - discovery-server
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - AUTH_SERVER_ISSUER=http://auth-server:9000
+
+  auth-server:
+    build: ./auth-server
+    container_name: auth-server
+    depends_on:
+      - discovery-server
+    ports:
+      - "9000:9000"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - APP_ISSUER=http://auth-server:9000
+
+  product-service:
+    build: ./products-service
+    container_name: product-service
+    depends_on:
+      - discovery-server
+      - auth-server
+    ports:
+      - "8081:8081"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - AUTH_SERVER_ISSUER=http://auth-server:9000
+
+  order-service:
+    build: ./order-service
+    container_name: order-service
+    depends_on:
+      - discovery-server
+      - product-service
+    ports:
+      - "8082:8082"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - AUTH_SERVER_ISSUER=http://auth-server:9000
