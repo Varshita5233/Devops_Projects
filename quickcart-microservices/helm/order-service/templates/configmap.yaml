@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-order-service-config
+  labels:
+    app: {{ .Release.Name }}-order-service
+data:
+  # This file is mounted as an additional Spring config source.
+  # It disables Eureka and points the Feign "product-service" client
+  # directly at the Kubernetes service (K8s-native discovery, no Eureka).
+  application.yml: |
+    eureka:
+      client:
+        enabled: false
+        register-with-eureka: false
+        fetch-registry: false
+    spring:
+      cloud:
+        openfeign:
+          client:
+            config:
+              product-service:
+                url: {{ .Values.productsServiceUrl }}

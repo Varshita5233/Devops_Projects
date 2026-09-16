@@ -1,0 +1,26 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/varshita5233/order-service
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8082
+
+ingress:
+  enabled: true
+
+# The URL where order-service can reach products-service inside the cluster
+# (Kubernetes DNS name — replaces Eureka service discovery)
+productsServiceUrl: "http://products-service-products-service.quickcart.svc.cluster.local"
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

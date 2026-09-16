@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: order-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Varshita5233/Devops_Projects.git
+    targetRevision: main
+    path: quickcart-microservices/helm/order-service
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: quickcart
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
