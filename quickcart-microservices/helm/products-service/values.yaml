@@ -10,8 +10,11 @@ service:
   port: 80
   targetPort: 8081
 
+# Ingress - exposes the service via the NGINX ingress controller
+ingress:
+  enabled: true
+
 # Environment variables injected into the container.
-# These make the service run standalone (no Eureka, no external auth server).
 env:
   EUREKA_CLIENT_ENABLED: "false"
   EUREKA_CLIENT_REGISTER_WITH_EUREKA: "false"
