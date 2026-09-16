@@ -9,7 +9,7 @@ on:
 
 env:
     REGISTRY: ghcr.io
-    IMAGE_NAME: ${{github.repository_owner}}/products_service
+    IMAGE_NAME: varshita5233/products-service
 
 jobs:
     build-and-push:
@@ -30,7 +30,7 @@ jobs:
                 password: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Build and push image
-              uses: docker/build-and-push@v6
+              uses: docker/build-push-action@v6
               with:
                 context: ./quickcart-microservices/products-service
                 file: ./quickcart-microservices/products-service/Dockerfile
