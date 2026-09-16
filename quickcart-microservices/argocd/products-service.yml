@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: application
+metadata:
+  name: products-service
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/Varshita5233/Devops_Projects.git
+    targetRevision: main
+    path: quickcart-microservices/helm/products-service
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: quickcart
+
+  syncPolicy:
+    automated:
+      selfHeal: true # revert manual cluster changes back to Git state
+      Prune: true # delete resources removed from Git
+    syncOptions:
+      - CreateNamespace=true

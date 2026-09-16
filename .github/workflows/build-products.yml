@@ -1,0 +1,42 @@
+name: Build products-service
+
+on:
+    push:
+        branches: [main]
+        paths:
+            - 'quickcart-microservices/products-service/**'
+            - '.github/workflows/build-products.yml'
+
+env:
+    REGISTRY: ghcr.io
+    IMAGE_NAME: ${{github.repository_owner}}/products_service
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Login to Github Container Registry
+              uses: docker/login-action@v3
+              with:
+                registry: ${{ env.REGISTRY }}
+                username: ${{ github.actor }}
+                password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Build and push image
+              uses: docker/build-and-push@v6
+              with:
+                context: ./quickcart-microservices/products-service
+                file: ./quickcart-microservices/products-service/Dockerfile
+                push: true
+                tags: |
+                    ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+                    ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+

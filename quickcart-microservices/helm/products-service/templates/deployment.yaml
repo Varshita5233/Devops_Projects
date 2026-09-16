@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-products-service
+  labels:
+    app: {{ .Release.Name }}-products-service
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-products-service
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-products-service
+    spec:
+      containers:
+        - name: products-service
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          # NOTE: No health probes yet - the app doesn't include Spring Boot Actuator.
+          # A "production-readiness" improvement for a later phase: add Actuator to the
+          # app, then wire readinessProbe/livenessProbe to /actuator/health endpoints.
